@@ -18,7 +18,6 @@ st.markdown("""
         background-color: #090d16;
     }
     
-    /* Background style for the new UI with subtle overlay */
     .new-ui-bg {
         background: linear-gradient(rgba(9, 13, 22, 0.85), rgba(9, 13, 22, 0.85)), 
                     url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23');
@@ -57,7 +56,6 @@ st.markdown("""
         margin-top: 10px;
     }
 
-    /* Floating Hearts Animation CSS */
     @keyframes floatUp {
         0% {
             transform: translateY(0px) scale(0.6);
@@ -86,25 +84,21 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Session state to track navigation
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
 
 if 'my_photos' not in st.session_state:
     st.session_state.my_photos = []
 
-# --- PAGE 1: HOME & GALLERY PAGE ---
 if st.session_state.page == 'home':
     st.markdown('<div class="gallery-header"> My Private Photo Gallery</div>', unsafe_allow_html=True)
 
-    # Skip / Jump Button to New UI
     col_skip1, col_skip2, col_skip3 = st.columns([1, 2, 1])
     with col_skip2:
         if st.button(" ကျော်ရန် (Vibe UI သို့သွားမည်)", use_container_width=True):
             st.session_state.page = 'new_ui'
             st.rerun()
 
-    # Sidebar for Admin Authentication
     st.sidebar.markdown("###  Admin Control")
     admin_password = st.sidebar.text_input("Admin Password ထည့်ပါ", type="password")
 
@@ -115,8 +109,50 @@ if st.session_state.page == 'home':
     elif admin_password != "":
         st.sidebar.error("Password မှားယွင်းနေပါသည်။")
 
-    # Show Upload section ONLY IF admin is logged in
     if is_admin:
         st.markdown("---")
         st.markdown("###  ဓာတ်ပုံအသစ် တင်ရန် (Admin Only)")
-        uploaded_file = st.file_uploader("ဓာတ်
+        uploaded_file = st.file_uploader("ဓာတ်ပုံရွေးချယ်ပါ", type=["jpg", "png", "jpeg"])
+        photo_caption = st.text_input("ဓာတ်ပုံအမည် သို့မဟုတ် မှတ်ချက်")
+        
+        if st.button("Upload လုပ်မည်"):
+            if uploaded_file is not None:
+                st.session_state.my_photos.append({"file": uploaded_file, "title": photo_caption if photo_caption else "Untitled"})
+                st.success("ဓာတ်ပုံ အောင်မြင်စွာ တင်ပြီးပါပြီ!")
+            else:
+                st.warning("ကျေးဇူးပြု၍ ဓာတ်ပုံအရင် ရွေးချယ်ပါ။")
+    else:
+        st.info(" ဓာတ်ပုံအသစ်တင်ရန် ဘယ်ဘက် ဘေးဘောင် (Sidebar) တွင် Admin Password ထည့်ပါ။")
+
+    st.markdown("---")
+    st.markdown("###  တင်ထားသော ဓာတ်ပုံများ")
+
+    if len(st.session_state.my_photos) == 0:
+        st.markdown("<p style='text-align: center; color: #64748b;'>လောလောဆယ် ဓာတ်ပုံ မရှိသေးပါ။</p>", unsafe_allow_html=True)
+    else:
+        col1, col2 = st.columns(2)
+        for i, item in enumerate(st.session_state.my_photos):
+            target_col = col1 if i % 2 == 0 else col2
+            with target_col:
+                st.markdown('<div class="photo-card">', unsafe_allow_html=True)
+                st.image(item["file"], use_container_width=True)
+                st.markdown(f'<div class="photo-title">{item["title"]}</div>', unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+elif st.session_state.page == 'new_ui':
+    st.markdown("""
+        <div class="new-ui-bg">
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <h2 style="color: #ffffff; margin-bottom: 10px;"> Special Vibe UI </h2>
+            <p style="color: #cbd5e1; font-size: 16px;">နောက်ခံပုံစံ ရေးရေးလေးနှင့် အသည်းနှလုံးလေးများ မိုးပေါ်ပျံတက်နေသော ပုံစံလေးဖြစ်ပါသည်...</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")
+    if st.button(" ပင်မစာမျက်နှာသို့ ပြန်ရန်", use_container_width=True):
+        st.session_state.page = 'home'
+        st.rerun()
