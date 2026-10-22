@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom CSS for Modern Dark Vibe, Background Image & Heart Animation
+# Custom CSS for Background Image & Floating Hearts Vibe UI
 st.markdown("""
     <style>
     .main {
@@ -18,19 +18,66 @@ st.markdown("""
         background-color: #090d16;
     }
     
-    .new-ui-bg {
-        background: linear-gradient(rgba(9, 13, 22, 0.85), rgba(9, 13, 22, 0.85)), 
-                    url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23');
+    /* Vibe UI with Beautiful Background Image and Overlay */
+    .vibe-container {
+        position: relative;
+        width: 100%;
+        min-height: 500px;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                          url('https://images.unsplash.com/photo-1534447677768-be436bb09401');
         background-size: cover;
         background-position: center;
         border-radius: 20px;
-        padding: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(5px);
+        padding: 40px 20px;
         text-align: center;
-        position: relative;
         overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
+
+    .vibe-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        margin-bottom: 15px;
+    }
+
+    .vibe-text {
+        font-size: 16px;
+        color: #f1f5f9;
+        text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+        margin-bottom: 30px;
+    }
+
+    /* Floating Hearts Animation */
+    @keyframes floatUpHearts {
+        0% {
+            transform: translateY(0px) scale(0.5);
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-350px) scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .heart-float {
+        position: absolute;
+        bottom: 10px;
+        color: #ff4d6d;
+        font-size: 28px;
+        animation: floatUpHearts 3.5s infinite ease-in-out;
+        z-index: 5;
+    }
+    .h1 { left: 15%; animation-delay: 0s; }
+    .h2 { left: 35%; animation-delay: 1s; }
+    .h3 { left: 55%; animation-delay: 0.4s; }
+    .h4 { left: 75%; animation-delay: 1.8s; }
+    .h5 { left: 85%; animation-delay: 0.8s; }
 
     .gallery-header {
         text-align: center;
@@ -55,32 +102,6 @@ st.markdown("""
         font-size: 14px;
         margin-top: 10px;
     }
-
-    @keyframes floatUp {
-        0% {
-            transform: translateY(0px) scale(0.6);
-            opacity: 0;
-        }
-        50% {
-            opacity: 0.8;
-        }
-        100% {
-            transform: translateY(-250px) scale(1.2);
-            opacity: 0;
-        }
-    }
-    .heart {
-        position: absolute;
-        color: #ec4899;
-        font-size: 24px;
-        animation: floatUp 4s infinite ease-in-out;
-        z-index: 10;
-    }
-    .heart:nth-child(1) { left: 10%; animation-delay: 0s; }
-    .heart:nth-child(2) { left: 30%; animation-delay: 1.2s; }
-    .heart:nth-child(3) { left: 50%; animation-delay: 0.5s; }
-    .heart:nth-child(4) { left: 70%; animation-delay: 2s; }
-    .heart:nth-child(5) { left: 90%; animation-delay: 1s; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -90,12 +111,13 @@ if 'page' not in st.session_state:
 if 'my_photos' not in st.session_state:
     st.session_state.my_photos = []
 
+# --- PAGE 1: HOME & GALLERY ---
 if st.session_state.page == 'home':
     st.markdown('<div class="gallery-header"> My Private Photo Gallery</div>', unsafe_allow_html=True)
 
     col_skip1, col_skip2, col_skip3 = st.columns([1, 2, 1])
     with col_skip2:
-        if st.button(" ကျော်ရန် (Vibe UI သို့သွားမည်)", use_container_width=True):
+        if st.button(" ကျော်ရန် (UI အသစ်သို့ သွားမည်)", use_container_width=True):
             st.session_state.page = 'new_ui'
             st.rerun()
 
@@ -139,16 +161,18 @@ if st.session_state.page == 'home':
                 st.markdown(f'<div class="photo-title">{item["title"]}</div>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
 
+# --- PAGE 2: NEW VIBE UI WITH BACKGROUND IMAGE & FLOATING HEARTS ---
 elif st.session_state.page == 'new_ui':
     st.markdown("""
-        <div class="new-ui-bg">
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <h2 style="color: #ffffff; margin-bottom: 10px;"> Special Vibe UI </h2>
-            <p style="color: #cbd5e1; font-size: 16px;">နောက်ခံပုံစံ ရေးရေးလေးနှင့် အသည်းနှလုံးလေးများ မိုးပေါ်ပျံတက်နေသော ပုံစံလေးဖြစ်ပါသည်...</p>
+        <div class="vibe-container">
+            <div class="heart-float h1"></div>
+            <div class="heart-float h2"></div>
+            <div class="heart-float h3"></div>
+            <div class="heart-float h4"></div>
+            <div class="heart-float h5"></div>
+            
+            <div class="vibe-title"> Special Vibe UI </div>
+            <div class="vibe-text">နောက်ခံပုံစံအလန်းစားပေါ်တွင် အသည်းနှလုံးလေးများ မိုးပေါ်သို့ အလှပဆုံး ပျံတက်နေပါပြီ...</div>
         </div>
     """, unsafe_allow_html=True)
     
